@@ -6,7 +6,7 @@ const pw = process.env.HANDOFF_PW; if (!pw) { console.error('缺 HANDOFF_PW'); p
 let html = fs.readFileSync(path.join(src, 'index.html'), 'utf8');
 const imgDir = path.join(src, 'img'); const IMG = {};
 for (const f of fs.readdirSync(imgDir)) IMG[f.replace(/\.jpg$/, '')] = 'data:image/jpeg;base64,' + fs.readFileSync(path.join(imgDir, f)).toString('base64');
-html = html.replace('img/${m.img}.jpg', '${IMG[m.img]}').replace('img/tex_${t[0]}.jpg', '${IMG["tex_"+t[0]]}');
+html = html.replaceAll('img/${m.img}.jpg', '${IMG[m.img]}').replaceAll('img/tex_${t[0]}.jpg', '${IMG["tex_"+t[0]]}');
 html = html.replace(/img\/([A-Za-z0-9_]+)\.jpg/g, (_, n) => { if (!IMG[n]) throw new Error('缺圖 ' + n); return IMG[n]; });
 html = html.replace('<script>', '<script>const IMG=' + JSON.stringify(IMG) + ';\n');
 if (/img\//.test(html.replace(/data:image[^"]*/g, ''))) console.warn('還有 img/ 參照沒換掉');
